@@ -19,4 +19,12 @@ class Order
   def deliver!
     @delivered = true
   end
+
+  def build_row
+    [@id, @meal.id, @customer.id, @employee.id, delivered?]
+  end
+
+  def self.headers
+    ['id', 'meal_id', 'customer_id', 'employee_id', 'delivered']
+  end
 end

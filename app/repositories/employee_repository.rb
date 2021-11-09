@@ -1,38 +1,26 @@
 require 'csv'
 require_relative '../models/employee'
+require_relative 'base_repository'
 
-class EmployeeRepository
-  def initialize(csv_file_path)
-    @csv_file_path = csv_file_path
-    @employees = [] # elements
-    load_csv if File.exist?(@csv_file_path)
-  end
-
-  def all
-    @employees
-  end
-
+class EmployeeRepository < BaseRepository
   def all_riders
-    @employees.select { |employee| employee.rider? }
+    @elements.select { |employee| employee.rider? }
   end
 
   def find_by_username(username)
-    @employees.find do |employee|
+    @elements.find do |employee|
       username == employee.username
     end
   end
 
   def find(id)
-    @employees.find { |employee| employee.id == id } # instance or nil
+    @elements.find { |employee| employee.id == id } # instance or nil
   end
 
   private
 
-  def load_csv
-    csv_options = { headers: :first_row, header_converters: :symbol}
-    CSV.foreach(@csv_file_path, csv_options) do |attributes|
-      attributes[:id] = attributes[:id].to_i
-      @employees << Employee.new(attributes)
-    end
+  def build_instance(attributes)
+    attributes[:id] = attributes[:id].to_i
+    Employee.new(attributes)
   end
 end
